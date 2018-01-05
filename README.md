@@ -1,4 +1,4 @@
-# Cadastro automoveis test's [![Build Status](https://travis-ci.org/gerardo-junior/cadastroautomoveistest.svg?branch=master)](https://travis-ci.org/gerardo-junior/cadastroautomoveistest)
+# Cadastro automoveis test's [![Build Status](https://travis-ci.org/gerardo-junior/cadastroautomoveistest.svg)](https://travis-ci.org/gerardo-junior/cadastroautomoveistest)
 
 
 ## Come on, do your tests
