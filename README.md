@@ -10,4 +10,4 @@ $ docker-compose build --no-cache # optional
 $ docker-compose up
 ```
 
-** Open localhost:80 or port that you configured in docker-compose.yml
+>  Open localhost:80 or port that you configured in docker-compose.yml
