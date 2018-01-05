@@ -87,7 +87,14 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 RUN apt-get update && apt-get install yarn
 
+# Set entrypoint
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 # Set USER
 RUN useradd -ms /bin/bash symfony
 USER symfony
 WORKDIR /src
+
+ENTRYPOINT /bin/bash -c "/usr/local/bin/entrypoint.sh"
+CMD ["true"]

@@ -2,6 +2,7 @@ version: '3.3'
 
 services:
     php:
+        restart: on-failure
         build: .docker/php
         volumes:
             - "./:/src"
@@ -9,8 +10,10 @@ services:
             - maildev
         env_file:
             - ".env"
+        tty: true
 
     nginx:
+        restart: on-failure
         build: .docker/nginx
         ports:
             - "80:80"
