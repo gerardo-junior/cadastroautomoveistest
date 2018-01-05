@@ -1,0 +1,31 @@
+version: '3.3'
+
+services:
+    php:
+        build: .docker/php
+        volumes:
+            - "./:/symfony"
+        depends_on:
+            - maildev
+        env_file:
+            - ".env"
+
+    nginx:
+        build: .docker/nginx
+        ports:
+            - "80:80"
+        volumes:
+            - "./:/symfony"
+        depends_on:
+            - php
+
+    # DEV TOOLS
+
+    maildev:
+        image: djfarrelly/maildev
+        ports:
+            - "1080:80"
+    blackfire:
+        image: blackfire/blackfire
+        env_file:
+            - ".env"
