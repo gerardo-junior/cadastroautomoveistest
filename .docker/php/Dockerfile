@@ -5,9 +5,9 @@ RUN apt-get update && apt-get install -y \
     unzip
 
 # Set TIMEZONE
-RUN rm /etc/localtime
-RUN ln -s /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
-RUN "date"
+CMD rm /etc/localtime
+CMD ln -s /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
+CMD "date"
 
 # Install APCU
 RUN pecl install apcu
@@ -58,7 +58,7 @@ RUN echo "xdebug.remote_port=9001" >> /usr/local/etc/php/conf.d/docker-php-ext-x
 # Copy config files
 COPY conf/php-fpm.conf /etc/php-fpm.conf
 COPY conf/php.ini /usr/local/etc/php/conf.d/100-php.ini
-RUN echo "date.timezone = \"${TIMEZONE}\"" >> /usr/local/etc/php/conf.d/100-php.ini
+CMD echo "date.timezone = \"${TIMEZONE}\"" >> /usr/local/etc/php/conf.d/100-php.ini
 
 # Install BLACKFIRE PROBE
 RUN version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
