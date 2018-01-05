@@ -1,14 +1,12 @@
 FROM php:7.1-fpm
 
-ENV NODE_VERSION=8.9.3
-
 RUN apt-get update && apt-get install -y \
     git \
     unzip
 
 # Set TIMEZONE
 RUN rm /etc/localtime
-RUN ln -s /usr/share/zoneinfo/Europe/Paris /etc/localtime
+RUN ln -s /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
 RUN "date"
 
 # Install APCU
@@ -51,11 +49,16 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 # Install XDEBUG
 RUN pecl install xdebug
-#RUN docker-php-ext-enable xdebug
-#RUN echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-#RUN echo "xdebug.remote_connect_back=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-#RUN echo "xdebug.idekey=\"PHPSTORM\"" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-#RUN echo "xdebug.remote_port=9001" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN docker-php-ext-enable xdebug
+RUN echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN echo "xdebug.remote_connect_back=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN echo "xdebug.idekey=\"PHPSTORM\"" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN echo "xdebug.remote_port=9001" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
+# Copy config files
+COPY conf/php-fpm.conf /etc/php-fpm.conf
+COPY conf/php.ini /usr/local/etc/php/conf.d/100-php.ini
+RUN echo "date.timezone = \"${TIMEZONE}\"" >> /usr/local/etc/php/conf.d/100-php.ini
 
 # Install BLACKFIRE PROBE
 RUN version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
@@ -69,6 +72,8 @@ RUN mkdir -p /tmp/blackfire \
     && curl -A "Docker" -L https://blackfire.io/api/v1/releases/client/linux_static/amd64 | tar zxp -C /tmp/blackfire \
     && mv /tmp/blackfire/blackfire /usr/bin/blackfire \
     && rm -Rf /tmp/blackfire
+
+ENV NODE_VERSION=8.9.3
 
 # Install NODEJS
 RUN apt-get install build-essential curl -y && \
@@ -85,7 +90,4 @@ RUN apt-get update && apt-get install yarn
 # Set USER
 RUN useradd -ms /bin/bash symfony
 USER symfony
-WORKDIR /symfony
-
-COPY conf/php-fpm.conf /etc/php-fpm.conf
-COPY conf/php.ini /usr/local/etc/php/conf.d/100-php.ini
+WORKDIR /src
